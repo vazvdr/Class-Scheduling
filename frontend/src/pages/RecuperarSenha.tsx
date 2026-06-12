@@ -36,13 +36,6 @@ export default function RecuperarSenha() {
         bloqueado={bloqueado}
         onSubmit={handleEnviar}
       />
-
-      <RecuperarSenhaAlert
-        visivel={alerta.visivel}
-        tipo={alerta.tipo}
-        titulo={alerta.titulo}
-        descricao={alerta.descricao}
-      />
     </div>
   );
 }
