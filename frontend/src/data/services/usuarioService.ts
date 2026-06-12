@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 
-const API = "http://localhost:8080/usuarios";
+const API = "https:/class-scheduling.up.railway.app/usuarios";
 
 export interface LoginPayload {
   email: string;
