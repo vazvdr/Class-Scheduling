@@ -45,9 +45,9 @@ export function HomeHero({
 
       <button
         onClick={onAgendar}
-        className="bg-black border border-white
-        text-white px-6 py-2 rounded
-        hover:bg-green-400 hover:text-black
+        className="bg-purple-700 border border-black
+        text-white font-semibold px-6 py-2 rounded
+        hover:text-black hover:bg-green-400
         hover:scale-105 transition
         cursor-pointer"
       >

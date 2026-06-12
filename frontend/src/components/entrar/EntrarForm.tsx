@@ -1,5 +1,4 @@
 import { UseFormReturn } from "react-hook-form";
-
 import {
   Form,
   FormField,
@@ -8,11 +7,8 @@ import {
   FormControl,
   FormMessage,
 } from "../ui/form";
-
 import { Input } from "../ui/input";
-
 import { RecuperarSenhaLink } from "./RecuperarSenhaLink";
-
 import type { EntrarFormData } from "../../data/types/entrar.types";
 
 interface EntrarFormProps {
@@ -144,8 +140,7 @@ export function EntrarForm({
           disabled={loading || loginLoading}
           className="w-full font-semibold py-2 rounded
           transition cursor-pointer border border-white
-          bg-transparent text-white
-          hover:bg-white hover:text-black"
+          bg-transparent text-white hover:border-black"
         >
           {isLogin
             ? loginLoading

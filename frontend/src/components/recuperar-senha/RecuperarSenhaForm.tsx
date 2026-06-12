@@ -1,5 +1,4 @@
 import { UseFormReturn } from "react-hook-form";
-
 import {
   Form,
   FormField,
@@ -8,9 +7,7 @@ import {
   FormControl,
   FormMessage,
 } from "../ui/form";
-
 import { Input } from "../ui/input";
-
 import type {
   RecuperarSenhaFormData,
 } from "../../data/types/recuperar-senha.types";

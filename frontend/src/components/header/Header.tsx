@@ -104,7 +104,7 @@ export default function Header() {
       ) : (
         <button
           onClick={() => navigate("/entrar")}
-          className="bg-black border border-white text-white px-4 py-1 mr-10 rounded-md
+          className="bg-black text-white border border-white font-semibold px-4 py-1 mr-10 rounded-md
           hover:bg-white hover:text-black hover:scale-105 transition cursor-pointer"
         >
           Entrar
