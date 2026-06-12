@@ -33,7 +33,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/usuarios")
-@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "Usuários", description = "Operações relacionadas a usuários")
 public class UsuarioController {
 
