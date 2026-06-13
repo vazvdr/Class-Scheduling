@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: backend-config
+  namespace: classscheduling
+
+data:
+  DB_URL: jdbc:postgresql://postgres:5432/classscheduling
+  DB_USERNAME: postgres
+
+  SPRING_PROFILES_ACTIVE: k8s
+
+  SERVER_PORT: "8080"
