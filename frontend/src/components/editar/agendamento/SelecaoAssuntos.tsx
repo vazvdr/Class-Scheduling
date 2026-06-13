@@ -60,13 +60,12 @@ export function SelecaoAssuntos({
                   horario: "",
                 })
               }
-              className={`w-full max-w-[10rem] cursor-pointer border-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition ${
-                selecionado.assunto
+              className={`w-full max-w-[10rem] cursor-pointer border-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition ${selecionado.assunto
                   ?.nome ===
-                assunto.nome
+                  assunto.nome
                   ? "border-blue-600"
                   : "border-gray-200"
-              }`}
+                }`}
             >
               {imagem ? (
                 <img
@@ -82,7 +81,12 @@ export function SelecaoAssuntos({
                 </div>
               )}
 
-              <div className="p-2 text-center text-white bg-blue-600">
+              <div
+                className={`p-2 text-center text-white transition-colors ${selecionado.assunto?.id === assunto.id
+                    ? "bg-blue-600"
+                    : "bg-zinc-800"
+                  }`}
+              >
                 <p className="text-sm font-medium h-8">
                   {assunto.nome}
                 </p>

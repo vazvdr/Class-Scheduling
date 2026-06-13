@@ -40,7 +40,7 @@ export function SelecaoProfessores({
         {professores.map((prof) => {
           const imagem =
             imagens[
-              prof.nome as keyof typeof imagens
+            prof.nome as keyof typeof imagens
             ];
 
           return (
@@ -51,19 +51,18 @@ export function SelecaoProfessores({
                   prof
                 )
               }
-              className={`w-40 cursor-pointer border-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition ${
-                professorSelecionado?.id ===
-                prof.id
+              className={`w-40 cursor-pointer border-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition ${professorSelecionado?.id ===
+                  prof.id
                   ? "border-blue-600"
                   : "border-gray-200"
-              }`}
+                }`}
             >
-              <div className="w-full h-28 bg-white flex items-center justify-center">
+              <div className="w-full h-28 bg-zinc-800 flex items-center justify-center">
                 {imagem ? (
                   <img
                     src={imagem}
                     alt={prof.nome}
-                    className="h-full w-full object-contain"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
                   <p className="text-xs text-center text-gray-500">
@@ -72,7 +71,12 @@ export function SelecaoProfessores({
                 )}
               </div>
 
-              <div className="p-2 text-center bg-white">
+              <div
+                className={`p-2 text-center text-white transition-colors ${professorSelecionado?.id === prof.id
+                    ? "bg-blue-600"
+                    : "bg-zinc-800"
+                  }`}
+              >
                 <p className="text-sm font-medium">
                   {prof.nome}
                 </p>
