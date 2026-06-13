@@ -1,15 +1,10 @@
 import { UseFormReturn } from "react-hook-form";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "../ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
+import { Eye, EyeOff } from "lucide-react";
 import { RecuperarSenhaLink } from "./RecuperarSenhaLink";
 import type { EntrarFormData } from "../../data/types/entrar.types";
+import { useState } from "react";
 
 interface EntrarFormProps {
   form: UseFormReturn<EntrarFormData>;
@@ -28,6 +23,7 @@ export function EntrarForm({
   onSubmit,
   irParaRecuperarSenha,
 }: EntrarFormProps) {
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   return (
     <Form {...form}>
       <form
@@ -91,12 +87,34 @@ export function EntrarForm({
               </FormLabel>
 
               <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  placeholder="Digite sua senha"
-                  className="text-white"
-                />
+                <div className="relative">
+                  <Input
+                    {...field}
+                    type={
+                      mostrarSenha
+                        ? "text"
+                        : "password"
+                    }
+                    placeholder="Digite sua senha"
+                    className="text-white pr-10"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setMostrarSenha(
+                        !mostrarSenha
+                      )
+                    }
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white transition cursor-pointer"
+                  >
+                    {mostrarSenha ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                </div>
               </FormControl>
 
               <FormMessage />
@@ -140,15 +158,15 @@ export function EntrarForm({
           disabled={loading || loginLoading}
           className="w-full font-semibold py-2 rounded
           transition cursor-pointer border border-white
-          bg-transparent text-white hover:border-black"
+          bg-transparent text-white hover:scale-101"
         >
           {isLogin
             ? loginLoading
               ? "Entrando..."
               : "Entrar"
             : loading
-            ? "Cadastrando..."
-            : "Cadastrar"}
+              ? "Cadastrando..."
+              : "Cadastrar"}
         </button>
       </form>
     </Form>
