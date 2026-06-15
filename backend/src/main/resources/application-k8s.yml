@@ -23,12 +23,13 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: health,info,prometheus,metrics
 
   endpoint:
     health:
       probes:
         enabled: true
+      show-details: always
 
   health:
     livenessstate:
@@ -36,3 +37,11 @@ management:
 
     readinessstate:
       enabled: true
+
+  logging:
+  level:
+    org.springframework.security: DEBUG
+
+  metrics:
+    tags:
+      application: classscheduling

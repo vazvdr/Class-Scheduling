@@ -21,7 +21,7 @@ spec:
       containers:
         - name: backend
 
-          image: classscheduling-backend:1.0
+          image: classscheduling-backend:2.0
 
           imagePullPolicy: Never
 

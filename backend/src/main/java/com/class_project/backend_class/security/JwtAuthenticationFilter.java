@@ -74,6 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                path.startsWith("/usuarios/cadastrar") ||
                path.startsWith("/usuarios/login") ||
                path.startsWith("/usuarios/recuperar-senha") ||
-               path.startsWith("/usuarios/redefinir-senha");
+               path.startsWith("/usuarios/redefinir-senha") || 
+               path.startsWith("/actuator");
     }
 }
