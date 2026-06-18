@@ -62,7 +62,7 @@ export function useEntrar() {
 
           navigate("/");
           setLoginLoading(false);
-        }, 2000);
+        }, 4000);
 
         return;
       }
