@@ -1,4 +1,4 @@
-import Banner from "../assets/Banner.jpg";
+import Banner from "../assets/Banner.webp";
 
 import Header from "../components/header/Header";
 

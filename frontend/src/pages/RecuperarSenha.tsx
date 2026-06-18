@@ -1,4 +1,4 @@
-import Banner from "../assets/Banner2.jpg";
+import Banner from "../assets/Banner2.webp";
 
 import { AuthHeader } from "../components/header/AuthHeader";
 import { RecuperarSenhaCard } from "../components/recuperar-senha/RecuperarSenhaCard";

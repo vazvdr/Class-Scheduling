@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Logo from "../assets/logo.png";
+import Logo from "../assets/logo.webp";
 import CanvasLines from "../components/CanvasLines";
 import { RedefinirSenhaCard } from "../components/redefinir-senha/RedefinirSenhaCard";
 import { useRedefinirSenha } from "../data/hooks/useRedefinirSenha";

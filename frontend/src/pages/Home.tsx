@@ -1,5 +1,5 @@
 import Header from "../components/header/Header";
-import Banner from "../assets/Banner2.jpg";
+import Banner from "../assets/Banner2.webp";
 import { HomeHero } from "../components/home/HomeHero";
 import { useHome } from "../data/hooks/useHome";
 

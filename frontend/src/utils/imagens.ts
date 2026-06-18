@@ -1,18 +1,18 @@
-import frontend from '../assets/Frontend.jpg';
-import backend from '../assets/Backend.png';
-import fullstack from '../assets/Fullstack.jpg';
-import CiberSecurity from '../assets/CiberSecurity.jpg';
-import devops from '../assets/DevOps.jpg';
-import english from '../assets/English.jpg';
-import Banner from '../assets/Banner.jpg';
-import Banner2 from '../assets/Banner2.jpg';
+import frontend from '../assets/Frontend.webp';
+import backend from '../assets/Backend.webp';
+import fullstack from '../assets/Fullstack.webp';
+import CiberSecurity from '../assets/CiberSecurity.webp';
+import devops from '../assets/DevOps.webp';
+import english from '../assets/English.webp';
+import Banner from '../assets/Banner.webp';
+import Banner2 from '../assets/Banner2.webp';
 
-import Amanda from '../assets/Amanda.png';
-import Bruno from '../assets/Bruno-Hacker.png';
-import Carla from '../assets/Carla.png';
-import Pedrinho from '../assets/Pedrinho-Backend.png';
-import Serjao from '../assets/Serjao-DevOps.png';
-import Vitao from '../assets/Vitao-Fullstack.png';
+import Amanda from '../assets/Amanda.webp';
+import Bruno from '../assets/Bruno-Hacker.webp';
+import Carla from '../assets/Carla.webp';
+import Pedrinho from '../assets/Pedrinho-Backend.webp';
+import Serjao from '../assets/Serjao-DevOps.webp';
+import Vitao from '../assets/Vitao-Fullstack.webp';
 
 export const imagens: Record<string, string> = {
   "Desenvolvimento Frontend": frontend,

@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-import Logo from "../../assets/logo.png";
+import Logo from "../../assets/logo.webp";
 
 export function AuthHeader() {
   const navigate = useNavigate();

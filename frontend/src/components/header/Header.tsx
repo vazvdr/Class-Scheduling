@@ -1,7 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 
-import Logo from "../../assets/logo.png";
-import Avatar from "../../assets/avatar.png";
+import Logo from "../../assets/logo.webp";
+import Avatar from "../../assets/avatar.webp";
 
 import { useAuth } from "../../data/contexts/AuthContext";
 

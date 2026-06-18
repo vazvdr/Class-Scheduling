@@ -5,7 +5,7 @@ import {
   Professor,
 } from "../types/agendamento.types";
 
-const API = "https://class-scheduling.up.railway.app";
+const API = "http://localhost:8080";
 
 interface AssuntoComProfessores
   extends Assunto {
