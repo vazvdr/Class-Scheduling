@@ -1,7 +1,9 @@
 package com.class_project.backend_class.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +38,13 @@ public class UsuarioService implements UserDetailsService {
     private JwtUtil jwtUtil;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    private static final int MAX_TENTATIVAS = 3;
+    private static final int TEMPO_BLOQUEIO_MINUTOS = 30;
+
+    private final ConcurrentHashMap<String, Integer> tentativasLogin = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<String, LocalDateTime> ipsBloqueados = new ConcurrentHashMap<>();
 
     public UsuarioResponseDTO cadastrar(UsuarioRequestDTO dto) {
         if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
@@ -125,5 +134,68 @@ public class UsuarioService implements UserDetailsService {
                 usuario.getEmail(),
                 assunto,
                 corpo);
+    }
+
+    public boolean ipEstaBloqueado(String ip) {
+
+        LocalDateTime bloqueadoAte = ipsBloqueados.get(ip);
+
+        if (bloqueadoAte == null) {
+            return false;
+        }
+
+        if (bloqueadoAte.isBefore(LocalDateTime.now())) {
+
+            ipsBloqueados.remove(ip);
+            tentativasLogin.remove(ip);
+
+            System.out.println(
+                    "[SEGURANÇA] IP desbloqueado automaticamente: "
+                            + ip);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public void registrarTentativaFalha(String ip) {
+
+        int tentativas = tentativasLogin.getOrDefault(ip, 0) + 1;
+
+        tentativasLogin.put(ip, tentativas);
+
+        System.out.println(
+                "[LOGIN] Tentativa inválida do IP: "
+                        + ip
+                        + " | Tentativa "
+                        + tentativas
+                        + "/"
+                        + MAX_TENTATIVAS);
+
+        if (tentativas >= MAX_TENTATIVAS) {
+
+            ipsBloqueados.put(
+                    ip,
+                    LocalDateTime.now()
+                            .plusMinutes(TEMPO_BLOQUEIO_MINUTOS));
+
+            tentativasLogin.remove(ip);
+
+            System.out.println(
+                    "[SEGURANÇA] IP bloqueado por "
+                            + TEMPO_BLOQUEIO_MINUTOS
+                            + " minutos: "
+                            + ip);
+        }
+    }
+
+    public void registrarLoginSucesso(String ip) {
+
+        tentativasLogin.remove(ip);
+
+        System.out.println(
+                "[LOGIN] Login realizado com sucesso pelo IP: "
+                        + ip);
     }
 }

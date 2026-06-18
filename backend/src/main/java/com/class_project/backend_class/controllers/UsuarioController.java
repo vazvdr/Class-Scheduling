@@ -57,13 +57,57 @@ public class UsuarioController {
 
     @Operation(summary = "Fazer login de um usuário")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginDTO) {
+    public ResponseEntity<?> login(
+            @RequestBody @Valid LoginRequestDTO loginDTO,
+            HttpServletRequest request) {
+
+        String ip = request.getHeader("X-Forwarded-For");
+
+        if (ip == null || ip.isBlank()) {
+            ip = request.getRemoteAddr();
+        } else {
+            ip = ip.split(",")[0].trim();
+        }
+
+        System.out.println(
+                "[LOGIN] Tentativa de acesso | IP: "
+                        + ip
+                        + " | Email: "
+                        + loginDTO.getEmail());
+
+        if (usuarioService.ipEstaBloqueado(ip)) {
+
+            System.out.println(
+                    "[SEGURANÇA] Tentativa de acesso bloqueada | IP: "
+                            + ip);
+
+            return ResponseEntity
+                    .status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of(
+                            "message",
+                            "IP bloqueado por excesso de tentativas. Tente novamente em 30 minutos."));
+        }
+
         try {
-            String token = usuarioService.login(loginDTO.getEmail(), loginDTO.getSenha());
-            return ResponseEntity.ok(Map.of("token", token));
+
+            String token = usuarioService.login(
+                    loginDTO.getEmail(),
+                    loginDTO.getSenha());
+
+            usuarioService.registrarLoginSucesso(ip);
+
+            return ResponseEntity.ok(
+                    Map.of("token", token));
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", e.getMessage()));
+
+            usuarioService.registrarTentativaFalha(ip);
+
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of(
+                            "message",
+                            e.getMessage()));
         }
     }
 
