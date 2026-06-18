@@ -69,23 +69,13 @@ public class UsuarioController {
             ip = ip.split(",")[0].trim();
         }
 
-        System.out.println(
-                "[LOGIN] Tentativa de acesso | IP: "
-                        + ip
-                        + " | Email: "
-                        + loginDTO.getEmail());
-
         if (usuarioService.ipEstaBloqueado(ip)) {
-
-            System.out.println(
-                    "[SEGURANÇA] Tentativa de acesso bloqueada | IP: "
-                            + ip);
 
             return ResponseEntity
                     .status(HttpStatus.TOO_MANY_REQUESTS)
                     .body(Map.of(
                             "message",
-                            "IP bloqueado por excesso de tentativas. Tente novamente em 30 minutos."));
+                            "Usuario bloqueado. Tente novamente em 30 minutos."));
         }
 
         try {

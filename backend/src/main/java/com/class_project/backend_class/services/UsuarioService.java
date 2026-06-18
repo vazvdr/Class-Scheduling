@@ -149,10 +149,6 @@ public class UsuarioService implements UserDetailsService {
             ipsBloqueados.remove(ip);
             tentativasLogin.remove(ip);
 
-            System.out.println(
-                    "[SEGURANÇA] IP desbloqueado automaticamente: "
-                            + ip);
-
             return false;
         }
 
@@ -165,14 +161,6 @@ public class UsuarioService implements UserDetailsService {
 
         tentativasLogin.put(ip, tentativas);
 
-        System.out.println(
-                "[LOGIN] Tentativa inválida do IP: "
-                        + ip
-                        + " | Tentativa "
-                        + tentativas
-                        + "/"
-                        + MAX_TENTATIVAS);
-
         if (tentativas >= MAX_TENTATIVAS) {
 
             ipsBloqueados.put(
@@ -181,12 +169,6 @@ public class UsuarioService implements UserDetailsService {
                             .plusMinutes(TEMPO_BLOQUEIO_MINUTOS));
 
             tentativasLogin.remove(ip);
-
-            System.out.println(
-                    "[SEGURANÇA] IP bloqueado por "
-                            + TEMPO_BLOQUEIO_MINUTOS
-                            + " minutos: "
-                            + ip);
         }
     }
 
@@ -194,8 +176,5 @@ public class UsuarioService implements UserDetailsService {
 
         tentativasLogin.remove(ip);
 
-        System.out.println(
-                "[LOGIN] Login realizado com sucesso pelo IP: "
-                        + ip);
     }
 }
