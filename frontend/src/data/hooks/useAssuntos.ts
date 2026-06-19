@@ -1,5 +1,3 @@
-// src/data/hooks/useAssuntos.ts
-
 import { useEffect, useState } from "react";
 import { buscarAssuntos } from "../services/agendamentoService";
 import { Assunto } from "../types/agendamento.types";
@@ -22,6 +20,11 @@ export function useAssuntos() {
             await buscarAssuntos();
 
           setAssuntos(dados);
+        } catch (erro) {
+          console.error(
+            "Erro ao carregar assuntos:",
+            erro
+          );
         } finally {
           setLoadingAssuntos(false);
         }

@@ -1,11 +1,9 @@
-import axios from "axios";
+import { api } from "../services/api";
 
 import {
   Assunto,
   Professor,
 } from "../types/agendamento.types";
-
-const API = "https://class-scheduling.up.railway.app";
 
 interface AssuntoComProfessores
   extends Assunto {
@@ -37,15 +35,6 @@ export type DisponibilidadeResponse =
     }
   >;
 
-const getAuthHeaders = () => {
-  const token =
-    localStorage.getItem("token");
-
-  return {
-    Authorization: `Bearer ${token}`,
-  };
-};
-
 const extrairIdDoToken = (
   token: string | null
 ): number | null => {
@@ -70,12 +59,8 @@ const extrairIdDoToken = (
 export const buscarAssuntos =
   async (): Promise<Assunto[]> => {
     const response =
-      await axios.get<Assunto[]>(
-        `${API}/assuntos`,
-        {
-          headers:
-            getAuthHeaders(),
-        }
+      await api.get<Assunto[]>(
+        "/assuntos"
       );
 
     return response.data;
@@ -102,15 +87,13 @@ export const buscarDisponibilidade =
     professorId: number
   ): Promise<DisponibilidadeResponse> => {
     const response =
-      await axios.get<DisponibilidadeResponse>(
-        `${API}/disponibilidade`,
+      await api.get<DisponibilidadeResponse>(
+        "/disponibilidade",
         {
           params: {
             assuntoId,
             professorId,
           },
-          headers:
-            getAuthHeaders(),
         }
       );
 
@@ -124,16 +107,14 @@ export const buscarDisponibilidadeParaEdicao =
     agendamentoId: number
   ): Promise<DisponibilidadeResponse> => {
     const response =
-      await axios.get<DisponibilidadeResponse>(
-        `${API}/disponibilidade/editar`,
+      await api.get<DisponibilidadeResponse>(
+        "/disponibilidade/editar",
         {
           params: {
             assuntoId,
             professorId,
             agendamentoId,
           },
-          headers:
-            getAuthHeaders(),
         }
       );
 
@@ -144,13 +125,9 @@ export const criarAgendamento =
   async (
     payload: CriarAgendamentoPayload
   ) => {
-    return axios.post(
-      `${API}/agendamentos`,
-      payload,
-      {
-        headers:
-          getAuthHeaders(),
-      }
+    return api.post(
+      "/agendamentos",
+      payload
     );
   };
 
@@ -173,14 +150,10 @@ export const listarAgendamentos =
     }
 
     const response =
-      await axios.get<
+      await api.get<
         Agendamento[]
       >(
-        `${API}/agendamentos/${usuarioId}`,
-        {
-          headers:
-            getAuthHeaders(),
-        }
+        `/agendamentos/${usuarioId}`
       );
 
     return response.data;
@@ -191,12 +164,8 @@ export const buscarAgendamentoPorId =
     id: number
   ): Promise<Agendamento> => {
     const response =
-      await axios.get<Agendamento>(
-        `${API}/agendamentos/${id}`,
-        {
-          headers:
-            getAuthHeaders(),
-        }
+      await api.get<Agendamento>(
+        `/agendamentos/${id}`
       );
 
     return response.data;
@@ -208,12 +177,11 @@ export const editarAgendamentoDoUsuario =
     payload: Partial<CriarAgendamentoPayload>
   ) => {
     const response =
-      await axios.put(
-        `${API}/agendamentos/${id}`,
+      await api.put(
+        `/agendamentos/${id}`,
         payload,
         {
           headers: {
-            ...getAuthHeaders(),
             "Content-Type":
               "application/json",
           },
@@ -227,11 +195,7 @@ export const deletarAgendamentoDoUsuario =
   async (
     id: number
   ): Promise<void> => {
-    await axios.delete(
-      `${API}/agendamentos/${id}`,
-      {
-        headers:
-          getAuthHeaders(),
-      }
+    await api.delete(
+      `/agendamentos/${id}`
     );
   };

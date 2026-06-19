@@ -36,6 +36,11 @@ export function useProfessores(
             );
 
           setProfessores(dados);
+        } catch (erro) {
+          console.error(
+            "Erro ao carregar professores:",
+            erro
+          );
         } finally {
           setLoadingProfessores(false);
         }

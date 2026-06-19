@@ -6,7 +6,7 @@ import Entrar from './pages/Entrar';
 import RecuperarSenha from '../src/pages/RecuperarSenha';
 import RedefinirSenha from '../src/pages/RedefinirSenha';
 import EditarUsuario from '../src/pages/EditarUsuario';
-import EditarAgendamento from './pages/EditarAgendamento';
+import EditarAgendamento from '../src/pages/EditarAgendamento';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {

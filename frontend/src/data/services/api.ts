@@ -18,11 +18,10 @@ api.interceptors.response.use(
   (response) => response,
 
   (error) => {
-    if (error.response?.status === 401) {
-      console.warn("[AUTH] Token expirado ou inválido");
+    const status = error.response?.status;
 
+    if (status === 401 || status === 403) {
       localStorage.removeItem("token");
-
       window.dispatchEvent(
         new CustomEvent("logout")
       );

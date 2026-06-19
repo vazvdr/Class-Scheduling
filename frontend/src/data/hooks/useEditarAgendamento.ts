@@ -16,7 +16,7 @@ import {
 } from "../services/agendamentoService";
 
 import {
-   Assunto,
+  Assunto,
   Professor,
   AgendamentoSelecionado,
   HorariosDisponiveis,
@@ -128,7 +128,7 @@ export function useEditarAgendamento() {
     const fim =
       new Date(
         inicio.getTime() +
-          duracao * 60000
+        duracao * 60000
       );
 
     const limites = {
@@ -161,17 +161,18 @@ export function useEditarAgendamento() {
         setLoadingAssuntos(
           true
         );
-
-        const dados =
-          await buscarAssuntos();
-
-        setAssuntos(dados);
-
-        setLoadingAssuntos(
-          false
-        );
+        try {
+          const dados =
+            await buscarAssuntos();
+          setAssuntos(dados);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoadingAssuntos(
+            false
+          );
+        }
       };
-
     carregarAssuntos();
   }, []);
 
@@ -185,23 +186,24 @@ export function useEditarAgendamento() {
           setLoadingProfessores(
             true
           );
-
-          const professoresEncontrados =
-            await buscarProfessoresPorAssunto(
-              selecionado
-                .assunto.nome
+          try {
+            const professoresEncontrados =
+              await buscarProfessoresPorAssunto(
+                selecionado
+                  .assunto.nome
+              );
+            setProfessores(
+              professoresEncontrados
             );
-
-          setProfessores(
-            professoresEncontrados
-          );
-
-          setLoadingProfessores(
-            false
-          );
+          } catch (error) {
+            console.error(error);
+          } finally {
+            setLoadingProfessores(
+              false
+            );
+          }
         }
       };
-
     carregarProfessores();
   }, [selecionado.assunto]);
 
@@ -244,7 +246,7 @@ export function useEditarAgendamento() {
               datasDisponiveis
             );
           } catch (
-            erro
+          erro
           ) {
             console.error(
               erro
@@ -313,7 +315,7 @@ export function useEditarAgendamento() {
           navigate("/");
         }, 4000);
       } catch (
-        error: any
+      error: any
       ) {
         const mensagemErro =
           error.response
