@@ -1,6 +1,5 @@
-import axios, { AxiosError } from "axios";
-
-const API = "https://class-scheduling.up.railway.app/usuarios";
+import { AxiosError } from "axios";
+import { api } from "./api";
 
 export interface LoginPayload {
   email: string;
@@ -36,39 +35,40 @@ export interface LoginResponse {
 export const loginUsuario = async (
   payload: LoginPayload
 ): Promise<LoginResponse> => {
-  const res = await axios.post<LoginResponse>(`${API}/login`, payload);
+  const res = await api.post<LoginResponse>(
+    "/usuarios/login",
+    payload
+  );
+
   return res.data;
 };
 
 export const cadastrarUsuario = async (
   payload: UsuarioPayload
 ): Promise<unknown> => {
-  const res = await axios.post(`${API}/cadastrar`, payload);
+  const res = await api.post(
+    "/usuarios/cadastrar",
+    payload
+  );
+
   return res.data;
 };
 
 export const editarUsuario = async (
   payload: UsuarioPayload
 ): Promise<unknown> => {
-  const token = localStorage.getItem("token");
-
-  const res = await axios.put(`${API}/editar`, payload, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await api.put(
+    "/usuarios/editar",
+    payload
+  );
 
   return res.data;
 };
 
 export const deletarUsuario = async (): Promise<unknown> => {
-  const token = localStorage.getItem("token");
-
-  const res = await axios.delete(`${API}/deletar`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await api.delete(
+    "/usuarios/deletar"
+  );
 
   return res.data;
 };
@@ -77,13 +77,17 @@ export const enviarLinkRecuperacaoSenha = async (
   email: string
 ): Promise<RecuperacaoResponse> => {
   try {
-    await axios.post(`${API}/recuperar-senha`, {
-      email,
-    });
+    await api.post(
+      "/usuarios/recuperar-senha",
+      {
+        email,
+      }
+    );
 
     return {
       sucesso: true,
-      mensagem: "Verifique sua caixa de entrada ou spam!",
+      mensagem:
+        "Verifique sua caixa de entrada ou spam!",
     };
   } catch (error) {
     const axiosError = error as AxiosError<{
@@ -106,10 +110,13 @@ export const redefinirSenha = async ({
   novaSenha,
 }: RedefinirSenhaPayload): Promise<unknown> => {
   try {
-    const response = await axios.post(`${API}/redefinir-senha`, {
-      token,
-      novaSenha,
-    });
+    const response = await api.post(
+      "/usuarios/redefinir-senha",
+      {
+        token,
+        novaSenha,
+      }
+    );
 
     return response.data;
   } catch (error) {

@@ -3,6 +3,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useRef,
 } from "react";
 
 import { jwtDecode } from "jwt-decode";
@@ -26,6 +27,7 @@ export function AuthProvider({
   );
 
   const [carregando, setCarregando] = useState(true);
+  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const tokenSalvo = localStorage.getItem("token");
@@ -71,6 +73,62 @@ export function AuthProvider({
     setToken(null);
     setUsuario(null);
   };
+
+  useEffect(() => {
+    const handleLogout = () => {
+      logout();
+    };
+
+    window.addEventListener(
+      "logout",
+      handleLogout
+    );
+
+    return () => {
+      window.removeEventListener(
+        "logout",
+        handleLogout
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!usuario) return;
+
+    const resetTimer = () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = window.setTimeout(() => {
+        logout();
+      }, 10 * 1000);
+    };
+
+    const eventos = [
+      "mousemove",
+      "mousedown",
+      "keydown",
+      "scroll",
+      "touchstart",
+    ];
+
+    eventos.forEach((evento) =>
+      window.addEventListener(evento, resetTimer)
+    );
+
+    resetTimer();
+
+    return () => {
+      eventos.forEach((evento) =>
+        window.removeEventListener(evento, resetTimer)
+      );
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [usuario]);
 
   return (
     <AuthContext.Provider
