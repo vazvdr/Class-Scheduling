@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private UsuarioService usuarioService;
-    
+
     public JwtAuthenticationFilter(JwtUtil jwtUtil, UsuarioService usuarioService) {
         this.jwtUtil = jwtUtil;
         this.usuarioService = usuarioService;
@@ -34,8 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
@@ -43,38 +43,52 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
 
-            String email = jwtUtil.extrairEmail(token);
+            try {
 
-            // Se não houver usuário autenticado ainda
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                String email = jwtUtil.extrairEmail(token);
 
-                UserDetails userDetails = usuarioService.loadUserByUsername(email);
+                if (email != null
+                        && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                if (jwtUtil.validarToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    UserDetails userDetails = usuarioService.loadUserByUsername(email);
 
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    if (jwtUtil.validarToken(token, userDetails)) {
 
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities());
+
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource()
+                                        .buildDetails(request));
+
+                        SecurityContextHolder.getContext()
+                                .setAuthentication(authToken);
+                    }
                 }
+
+            } catch (Exception e) {
+
+                System.out.println(
+                        "[JWT] Token expirado ou inválido");
             }
         }
 
         filterChain.doFilter(request, response);
     }
-    
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
 
         return path.startsWith("/v3/api-docs") ||
-               path.startsWith("/swagger-ui") ||
-               path.equals("/swagger-ui.html") ||
-               path.startsWith("/usuarios/cadastrar") ||
-               path.startsWith("/usuarios/login") ||
-               path.startsWith("/usuarios/recuperar-senha") ||
-               path.startsWith("/usuarios/redefinir-senha") || 
-               path.startsWith("/actuator");
+                path.startsWith("/swagger-ui") ||
+                path.equals("/swagger-ui.html") ||
+                path.startsWith("/usuarios/cadastrar") ||
+                path.startsWith("/usuarios/login") ||
+                path.startsWith("/usuarios/recuperar-senha") ||
+                path.startsWith("/usuarios/redefinir-senha") ||
+                path.startsWith("/actuator");
     }
 }

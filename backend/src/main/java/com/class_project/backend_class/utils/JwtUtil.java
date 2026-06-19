@@ -20,8 +20,8 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
 
 	private final SecretKey chaveSecreta;
-
 	private static final long PASSWORD_RESET_EXPIRATION = 1000 * 60 * 10; // 10 minutos
+	private static final long JWT_EXPIRATION = 1000 * 60 * 1; // 6 horas
 
 	public JwtUtil(@Value("${jwt.secret}") String secret) {
 		this.chaveSecreta = Keys.hmacShaKeyFor(
@@ -34,6 +34,10 @@ public class JwtUtil {
 				.claim("id", usuario.getId())
 				.claim("nome", usuario.getNome())
 				.setIssuedAt(new Date())
+				.setExpiration(
+						new Date(
+								System.currentTimeMillis()
+										+ JWT_EXPIRATION))
 				.signWith(
 						chaveSecreta,
 						SignatureAlgorithm.HS256)
