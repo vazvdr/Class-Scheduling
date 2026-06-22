@@ -19,7 +19,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter
+        extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -27,66 +28,68 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UsuarioService usuarioService;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UsuarioService usuarioService) {
+    public JwtAuthenticationFilter(
+            JwtUtil jwtUtil,
+            UsuarioService usuarioService) {
+
         this.jwtUtil = jwtUtil;
         this.usuarioService = usuarioService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
+    protected void doFilterInternal(
+            HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain)
             throws ServletException, IOException {
-
         String authHeader = request.getHeader("Authorization");
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        if (authHeader != null &&
+                authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-
             try {
-
                 String email = jwtUtil.extrairEmail(token);
-
-                if (email != null
-                        && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                    UserDetails userDetails = usuarioService.loadUserByUsername(email);
-
-                    if (jwtUtil.validarToken(token, userDetails)) {
-
+                if (email != null &&
+                        SecurityContextHolder
+                                .getContext()
+                                .getAuthentication() == null) {
+                    UserDetails userDetails = usuarioService
+                            .loadUserByUsername(email);
+                    if (jwtUtil.validarToken(
+                            token,
+                            userDetails)) {
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
                                 userDetails.getAuthorities());
-
                         authToken.setDetails(
                                 new WebAuthenticationDetailsSource()
                                         .buildDetails(request));
-
-                        SecurityContextHolder.getContext()
+                        SecurityContextHolder
+                                .getContext()
                                 .setAuthentication(authToken);
                     }
                 }
-
             } catch (Exception e) {
-
-                System.out.println(
-                        "[JWT] Token expirado ou inválido");
+                SecurityContextHolder
+                        .clearContext();
             }
         }
-
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(
+                request,
+                response);
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(
+            HttpServletRequest request)
+            throws ServletException {
         String path = request.getServletPath();
-
         return path.startsWith("/v3/api-docs") ||
                 path.startsWith("/swagger-ui") ||
                 path.equals("/swagger-ui.html") ||
                 path.startsWith("/usuarios/cadastrar") ||
                 path.startsWith("/usuarios/login") ||
+                path.startsWith("/usuarios/refresh") ||
                 path.startsWith("/usuarios/recuperar-senha") ||
                 path.startsWith("/usuarios/redefinir-senha") ||
                 path.startsWith("/actuator");

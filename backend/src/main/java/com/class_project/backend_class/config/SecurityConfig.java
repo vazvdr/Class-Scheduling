@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/usuarios/cadastrar",
                                 "/usuarios/login",
+                                "/usuarios/refresh",
                                 "/usuarios/recuperar-senha",
                                 "/usuarios/redefinir-senha",
                                 "/v3/api-docs/**",

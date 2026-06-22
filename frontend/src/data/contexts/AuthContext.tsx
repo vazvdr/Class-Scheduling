@@ -18,6 +18,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 
+
 import type {
   Usuario,
   JwtPayload,
@@ -25,87 +26,107 @@ import type {
   AuthProviderProps,
 } from "../types/auth.types";
 
-const AuthContext = createContext<AuthContextData | undefined>(undefined);
+const AuthContext =
+  createContext<AuthContextData | undefined>(
+    undefined
+  );
 
 export function AuthProvider({
   children,
 }: AuthProviderProps) {
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
 
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
-  );
+  const [usuario, setUsuario] =
+    useState<Usuario | null>(null);
 
-  const [carregando, setCarregando] = useState(true);
+  const [token, setToken] =
+    useState<string | null>(null);
+
+  const [carregando, setCarregando] =
+    useState(true);
 
   const [tokenExpirado, setTokenExpirado] =
     useState(false);
+  
+    const timeoutRef =
+    useRef<number | null>(null);
+  
+    async function renovarToken() {
+    try {
+      const response =
+        await fetch(
+          `${import.meta.env.VITE_API_URL}/usuarios/refresh`,
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
+      if (!response.ok) {
+        throw new Error(
+          "Refresh token expirado"
+        );
+      }
 
-  const timeoutRef = useRef<number | null>(null);
+      const data =
+        await response.json();
+
+      const novoToken =
+        data.accessToken;
+
+      const decoded =
+        jwtDecode<JwtPayload>(
+          novoToken
+        );
+      setToken(
+        novoToken
+      );
+      setUsuario({
+        nome: decoded.nome,
+        email: decoded.sub,
+        token: novoToken,
+      });
+    } catch (error) {
+      setToken(null);
+      setUsuario(null);
+    } finally {
+      setCarregando(false);
+    }
+  }
 
   useEffect(() => {
-    const tokenSalvo = localStorage.getItem("token");
-
-    if (tokenSalvo) {
-      try {
-        const decoded =
-          jwtDecode<JwtPayload>(tokenSalvo);
-
-        setToken(tokenSalvo);
-
-        setUsuario({
-          nome: decoded.nome,
-          email: decoded.sub,
-          token: tokenSalvo,
-        });
-      } catch (error) {
-        console.error(
-          "Erro ao decodificar token:",
-          error
-        );
-
-        localStorage.removeItem("token");
-      }
-    }
-
-    setCarregando(false);
+    renovarToken();
   }, []);
 
-  const login = (token: string): void => {
-    localStorage.setItem("token", token);
-
+  const login = (
+    novoToken: string
+  ): void => {
     const decoded =
-      jwtDecode<JwtPayload>(token);
+      jwtDecode<JwtPayload>(
+        novoToken
+      );
 
-    setToken(token);
-
+    setToken(
+      novoToken
+    );
     setUsuario({
       nome: decoded.nome,
       email: decoded.sub,
-      token,
+      token: novoToken,
     });
   };
 
   const logout = (): void => {
-    localStorage.removeItem("token");
-
     setToken(null);
     setUsuario(null);
   };
 
   useEffect(() => {
     const handleLogout = () => {
-      console.log(
-        "Evento de logout recebido do interceptor"
-      );
       setTokenExpirado(true);
     };
-
     window.addEventListener(
       "logout",
       handleLogout
     );
-
     return () => {
       window.removeEventListener(
         "logout",
@@ -115,23 +136,23 @@ export function AuthProvider({
   }, []);
 
   useEffect(() => {
-    if (!usuario) return;
-
+    if (!usuario)
+      return;
     const resetTimer = () => {
       if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+        clearTimeout(
+          timeoutRef.current
+        );
       }
-
       timeoutRef.current =
-        window.setTimeout(() => {
-          console.log(
-            "Logout sendo feito por inatividade"
-          );
+        window.setTimeout(
+          () => {
+            logout();
+          },
+          2 * 60 * 1000
+        );
 
-          logout();
-        }, 2 * 60 * 1000);
     };
-
     const eventos = [
       "mousemove",
       "mousedown",
@@ -139,40 +160,34 @@ export function AuthProvider({
       "scroll",
       "touchstart",
     ];
-
-    eventos.forEach((evento) =>
+    eventos.forEach(evento =>
       window.addEventListener(
         evento,
         resetTimer
       )
     );
-
     resetTimer();
-
     return () => {
-      eventos.forEach((evento) =>
+      eventos.forEach(evento =>
         window.removeEventListener(
           evento,
           resetTimer
         )
       );
-
       if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+        clearTimeout(
+          timeoutRef.current
+        );
       }
     };
   }, [usuario]);
-
   const confirmarLogoutPorExpiracao =
     (): void => {
-      console.log(
-        "Logout confirmado pelo usuário"
-      );
       setTokenExpirado(false);
       logout();
-      window.location.href = "/";
+      window.location.href =
+        "/";
     };
-
   return (
     <>
       <AuthContext.Provider
@@ -186,23 +201,25 @@ export function AuthProvider({
       >
         {children}
       </AuthContext.Provider>
-
-      <AlertDialog
-        open={tokenExpirado}
+      <AlertDialog open={tokenExpirado}
       >
-        <AlertDialogContent className="bg-black text-white border border-white">
+        <AlertDialogContent
+          className="
+          bg-black
+          text-white
+          border
+          border-white
+          "
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>
               Sessão expirada
             </AlertDialogTitle>
-
             <AlertDialogDescription>
-              Seu token de login expirou. Faça login
-              novamente para continuar
-              utilizando a plataforma.
+              Seu token expirou.
+              Faça login novamente.
             </AlertDialogDescription>
           </AlertDialogHeader>
-
           <AlertDialogFooter>
             <AlertDialogAction
               onClick={
@@ -221,13 +238,13 @@ export function AuthProvider({
 export const useAuth =
   (): AuthContextData => {
     const context =
-      useContext(AuthContext);
-
+      useContext(
+        AuthContext
+      );
     if (!context) {
       throw new Error(
         "useAuth deve ser utilizado dentro de um AuthProvider"
       );
     }
-
     return context;
   };
