@@ -32,3 +32,9 @@ brevo:
 
 server:
   port: ${PORT:8080}
+
+  servlet:
+    session:
+      cookie:
+        secure: true
+        http-only: true
