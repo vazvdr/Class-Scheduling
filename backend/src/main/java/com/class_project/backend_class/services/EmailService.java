@@ -29,6 +29,16 @@ public class EmailService {
             String conteudo) {
 
         try {
+            if (apiKey == null) {
+                System.out.println("❌ BREVO_API_KEY está NULL");
+            } else {
+                System.out.println(
+                        "API KEY (primeiros caracteres): "
+                                + apiKey.substring(
+                                        0,
+                                        Math.min(10, apiKey.length()))
+                                + "...");
+            }
 
             Map<String, Object> body = new HashMap<>();
             Map<String, String> sender = new HashMap<>();
@@ -50,19 +60,17 @@ public class EmailService {
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
-            restTemplate.postForEntity(
+            ResponseEntity<String> response = restTemplate.postForEntity(
                     BREVO_URL,
                     request,
                     String.class);
 
         } catch (HttpClientErrorException e) {
-
             throw new RuntimeException(
                     "Erro ao enviar email de agendamento",
                     e);
 
         } catch (Exception e) {
-
             throw new RuntimeException(
                     "Erro ao enviar email de agendamento",
                     e);
@@ -75,6 +83,16 @@ public class EmailService {
             String conteudo) {
 
         try {
+            if (apiKey == null) {
+                System.out.println("❌ BREVO_API_KEY está NULL");
+            } else {
+                System.out.println(
+                        "API KEY (primeiros caracteres): "
+                                + apiKey.substring(
+                                        0,
+                                        Math.min(10, apiKey.length()))
+                                + "...");
+            }
 
             Map<String, Object> body = new HashMap<>();
             Map<String, String> sender = new HashMap<>();
@@ -96,19 +114,16 @@ public class EmailService {
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
-            restTemplate.postForEntity(
+            ResponseEntity<String> response = restTemplate.postForEntity(
                     BREVO_URL,
                     request,
                     String.class);
-
         } catch (HttpClientErrorException e) {
-
             throw new RuntimeException(
                     "Erro ao enviar email de recuperação de senha",
                     e);
 
         } catch (Exception e) {
-
             throw new RuntimeException(
                     "Erro ao enviar email de recuperação de senha",
                     e);
