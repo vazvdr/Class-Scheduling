@@ -1,14 +1,13 @@
 package com.class_project.backend_class.config;
 
-import com.class_project.backend_class.security.JwtAuthenticationFilter;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -16,6 +15,8 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.class_project.backend_class.security.JwtAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -25,12 +26,10 @@ public class SecurityConfig {
 
         public SecurityConfig(
                         JwtAuthenticationFilter jwtAuthenticationFilter) {
-
                 this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         }
 
         @Bean
-        @Order(1)
         public SecurityFilterChain swaggerFilterChain(
                         HttpSecurity http)
                         throws Exception {
@@ -40,9 +39,6 @@ public class SecurityConfig {
                                                 "/swagger-ui/**",
                                                 "/swagger-ui.html",
                                                 "/v3/api-docs/**")
-
-                                .cors(cors -> cors.configurationSource(
-                                                corsConfigurationSource()))
 
                                 .csrf(csrf -> csrf.disable())
 
@@ -54,7 +50,6 @@ public class SecurityConfig {
         }
 
         @Bean
-        @Order(2)
         public SecurityFilterChain apiFilterChain(
                         HttpSecurity http)
                         throws Exception {
@@ -71,24 +66,24 @@ public class SecurityConfig {
 
                                 .headers(headers -> headers
 
-                                                .contentSecurityPolicy(csp -> csp.policyDirectives(
-                                                                "default-src 'none'; " +
-                                                                                "frame-ancestors 'none';"))
+                                                .contentSecurityPolicy(csp -> csp
+                                                                .policyDirectives(
+                                                                                "default-src 'none'; frame-ancestors 'none';"))
 
                                                 .frameOptions(frame -> frame.deny())
 
                                                 .contentTypeOptions(contentType -> {
                                                 })
 
-                                                .referrerPolicy(referrer -> referrer.policy(
-                                                                ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
+                                                .referrerPolicy(referrer -> referrer
+                                                                .policy(
+                                                                                ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
 
                                                 .httpStrictTransportSecurity(hsts -> hsts
                                                                 .includeSubDomains(true)
                                                                 .maxAgeInSeconds(31536000)))
 
                                 .authorizeHttpRequests(auth -> auth
-
                                                 .requestMatchers(
                                                                 "/usuarios/cadastrar",
                                                                 "/usuarios/login",
@@ -97,7 +92,6 @@ public class SecurityConfig {
                                                                 "/usuarios/redefinir-senha",
                                                                 "/actuator/health")
                                                 .permitAll()
-
                                                 .anyRequest()
                                                 .authenticated())
 
@@ -130,8 +124,7 @@ public class SecurityConfig {
                                 List.of("*"));
 
                 config.setExposedHeaders(
-                                List.of(
-                                                "Authorization"));
+                                List.of("Authorization"));
 
                 config.setAllowCredentials(
                                 true);
