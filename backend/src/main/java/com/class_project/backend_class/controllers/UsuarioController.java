@@ -107,8 +107,8 @@ public class UsuarioController {
                         refreshToken
                     )
                     .httpOnly(true)
-                    .secure(false)
-                    .sameSite("Lax")
+                    .secure(true)
+                    .sameSite("None")
                     .path("/")
                     .maxAge(
                         60 * 60 * 6
