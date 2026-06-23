@@ -25,6 +25,7 @@ import type {
   AuthContextData,
   AuthProviderProps,
 } from "../types/auth.types";
+import { api, setAccessToken } from "../services/api";
 
 const AuthContext =
   createContext<AuthContextData | undefined>(
@@ -46,48 +47,54 @@ export function AuthProvider({
 
   const [tokenExpirado, setTokenExpirado] =
     useState(false);
-  
-    const timeoutRef =
+
+  const timeoutRef =
     useRef<number | null>(null);
-  
-    async function renovarToken() {
+
+  async function renovarToken() {
     try {
       const response =
-        await fetch(
-          `${import.meta.env.VITE_API_URL}/usuarios/refresh`,
+        await api.post(
+          "/usuarios/refresh",
+          {},
           {
-            method: "POST",
-            credentials: "include",
+            withCredentials: true,
           }
         );
-      if (!response.ok) {
-        throw new Error(
-          "Refresh token expirado"
-        );
-      }
-
-      const data =
-        await response.json();
-
       const novoToken =
-        data.accessToken;
+        response.data.accessToken;
+      setAccessToken(
+        novoToken
+      );
 
       const decoded =
         jwtDecode<JwtPayload>(
           novoToken
         );
+
       setToken(
         novoToken
       );
+
       setUsuario({
+        id: decoded.id,
         nome: decoded.nome,
         email: decoded.sub,
         token: novoToken,
       });
+
     } catch (error) {
+
+      console.error(
+        "Erro refresh:",
+        error
+      );
+
       setToken(null);
       setUsuario(null);
+
     } finally {
+
       setCarregando(false);
     }
   }
@@ -103,11 +110,14 @@ export function AuthProvider({
       jwtDecode<JwtPayload>(
         novoToken
       );
-
+    setAccessToken(
+      novoToken
+    );
     setToken(
       novoToken
     );
     setUsuario({
+      id: decoded.id,
       nome: decoded.nome,
       email: decoded.sub,
       token: novoToken,
@@ -115,6 +125,7 @@ export function AuthProvider({
   };
 
   const logout = (): void => {
+    setAccessToken(null);
     setToken(null);
     setUsuario(null);
   };

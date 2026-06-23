@@ -1,13 +1,15 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://class-scheduling.up.railway.app",
+  baseURL: "http://localhost:8080",
   withCredentials: true,
 });
 
 let accessToken: string | null = null;
 
-export function setAccessToken(token: string | null) {
+export function setAccessToken(
+  token: string | null
+) {
   accessToken = token;
 }
 

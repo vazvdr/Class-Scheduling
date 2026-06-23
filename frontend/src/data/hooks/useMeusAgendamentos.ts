@@ -11,8 +11,11 @@ import {
 } from "react";
 
 import { AgendamentoAlert } from "../types/agendamento.types";
+import { useAuth } from "../contexts/AuthContext";
 
 export function useMeusAgendamentos() {
+  const { usuario } = useAuth();
+
   const [agendamentos, setAgendamentos] =
     useState<Agendamento[]>([]);
 
@@ -82,15 +85,18 @@ export function useMeusAgendamentos() {
   const carregarAgendamentosDoUsuario =
     async () => {
       try {
+        if (!usuario) {
+          setAgendamentos([]);
+          return;
+        }
         setLoading(true);
-
         const dados =
-          await listarAgendamentos();
-
+          await listarAgendamentos(
+            usuario.id
+          );
         setAgendamentos(dados);
       } catch (error) {
         console.error(error);
-
         setAgendamentos([]);
       } finally {
         setLoading(false);

@@ -130,29 +130,13 @@ export const criarAgendamento =
       payload
     );
   };
-
 export const listarAgendamentos =
-  async (): Promise<
-    Agendamento[]
-  > => {
-    const token =
-      localStorage.getItem(
-        "token"
-      );
-
-    const usuarioId =
-      extrairIdDoToken(token);
-
-    if (!usuarioId) {
-      throw new Error(
-        "ID do usuário não encontrado no token"
-      );
-    }
+  async (
+    usuarioId: number
+  ): Promise<Agendamento[]> => {
 
     const response =
-      await api.get<
-        Agendamento[]
-      >(
+      await api.get<Agendamento[]>(
         `/agendamentos/${usuarioId}`
       );
 

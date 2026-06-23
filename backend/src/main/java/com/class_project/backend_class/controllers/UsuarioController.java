@@ -107,8 +107,8 @@ public class UsuarioController {
                         refreshToken
                     )
                     .httpOnly(true)
-                    .secure(true)
-                    .sameSite("Strict")
+                    .secure(false)
+                    .sameSite("Lax")
                     .path("/")
                     .maxAge(
                         60 * 60 * 6
@@ -150,6 +150,7 @@ public class UsuarioController {
         String refreshToken = null;
         Cookie[] cookies =
                 request.getCookies();
+                System.out.println("COOKIES RECEBIDOS:");
         if(cookies != null) {
             for(Cookie cookie : cookies) {
                 if(

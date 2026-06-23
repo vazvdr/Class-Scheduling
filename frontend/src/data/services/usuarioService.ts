@@ -24,12 +24,7 @@ export interface RecuperacaoResponse {
 }
 
 export interface LoginResponse {
-  token: string;
-  usuario: {
-    nome?: string;
-    email?: string;
-    token?: string;
-  };
+  accessToken: string;
 }
 
 export const loginUsuario = async (

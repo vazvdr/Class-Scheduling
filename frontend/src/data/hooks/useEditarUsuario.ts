@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import { useUsuario } from "./useUsuario";
+import { useAuth } from "../contexts/AuthContext";
 
 import type {
   EditarUsuarioFormData,
@@ -11,6 +12,10 @@ import type {
 
 export function useEditarUsuario() {
   const navigate = useNavigate();
+
+  const {
+    usuario,
+  } = useAuth();
 
   const { editar, deletar } = useUsuario();
 
@@ -27,79 +32,103 @@ export function useEditarUsuario() {
       descricao: "",
     });
 
-  const form = useForm<EditarUsuarioFormData>({
-    defaultValues: {
-      nome: "",
-      email: "",
-      telefone: "",
-      senha: "",
-    },
-  });
+  const form =
+    useForm<EditarUsuarioFormData>({
+      defaultValues: {
+        nome: "",
+        email: "",
+        telefone: "",
+        senha: "",
+      },
+    });
 
   const { setValue } = form;
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
 
-    if (!token) {
+    if (!usuario) {
       navigate("/entrar");
       return;
     }
 
-    const user = JSON.parse(
-      localStorage.getItem("usuario") || "{}"
+    setValue(
+      "nome",
+      usuario.nome || ""
     );
 
-    setValue("nome", user.nome || "");
-    setValue("email", user.email || "");
-    setValue("telefone", user.telefone || "");
-  }, [navigate, setValue]);
+    setValue(
+      "email",
+      usuario.email || ""
+    );
 
-  const onSubmit = async (
-    data: EditarUsuarioFormData
-  ): Promise<void> => {
-    setLoadingAtualizar(true);
+    setValue(
+      "telefone",
+      ""
+    );
 
-    await editar({
-      ...data,
-      onSuccess: () => {
-        setAlerta({
-          visivel: true,
-          titulo:
-            "Seus dados foram atualizados com sucesso! ✅",
-          descricao:
-            "Você será redirecionado para a página inicial!",
-        });
+  }, [
+    usuario,
+    navigate,
+    setValue,
+  ]);
 
-        setLoadingAtualizar(false);
 
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
-      },
-    });
-  };
+  const onSubmit =
+    async (
+      data: EditarUsuarioFormData
+    ): Promise<void> => {
 
-  const handleDeletar = (): void => {
-    setConfirmarExclusao(true);
-  };
+      setLoadingAtualizar(true);
 
-  const confirmarDelete = async (): Promise<void> => {
-    await deletar();
+      await editar({
+        ...data,
 
-    setConfirmarExclusao(false);
+        onSuccess: () => {
 
-    setAlerta({
-      visivel: true,
-      titulo: "Sua conta foi excluída com sucesso! ✅",
-      descricao:
-        "Você será redirecionado para a página inicial!",
-    });
+          setAlerta({
+            visivel: true,
+            titulo:
+              "Seus dados foram atualizados com sucesso! ✅",
+            descricao:
+              "Você será redirecionado para a página inicial!",
+          });
 
-    setTimeout(() => {
-      navigate("/");
-    }, 4000);
-  };
+          setLoadingAtualizar(false);
+
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        },
+      });
+    };
+
+
+  const handleDeletar =
+    (): void => {
+      setConfirmarExclusao(true);
+    };
+
+
+  const confirmarDelete =
+    async (): Promise<void> => {
+
+      await deletar();
+
+      setConfirmarExclusao(false);
+
+      setAlerta({
+        visivel: true,
+        titulo:
+          "Sua conta foi excluída com sucesso! ✅",
+        descricao:
+          "Você será redirecionado para a página inicial!",
+      });
+
+      setTimeout(() => {
+        navigate("/");
+      }, 4000);
+    };
+
 
   return {
     form,

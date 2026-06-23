@@ -40,8 +40,7 @@ export function useUsuario() {
         email,
         senha,
       });
-
-      loginContext(data.token);
+      loginContext(data.accessToken);
     } catch (err) {
       throw err;
     }

@@ -1,10 +1,12 @@
 export interface Usuario {
   token?: string;
+  id: number;
   nome?: string;
   email?: string;
 }
 
 export interface JwtPayload {
+  id: number
   nome: string;
   sub: string;
 }
